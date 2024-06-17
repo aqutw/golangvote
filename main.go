@@ -15,12 +15,17 @@ func main() {
 		context.HTML(http.StatusOK, "login.tmpl", nil)
 	})
 	g.POST("/login", func(context *gin.Context) {
-		context.JSON(http.StatusOK, map[string]int{
-			"name": 123, // note: MUST ending w ,
-		})
+		var u User
+		_ = context.ShouldBind(&u)
+		context.JSON(http.StatusOK, u)
 	})
 
 	if err := g.Run(":8080"); err != nil {
 		fmt.Println("fail")
 	}
+}
+
+type User struct {
+	Name     string `json:"name" form:"name"`
+	Password string `json:"password" form:"password"`
 }
